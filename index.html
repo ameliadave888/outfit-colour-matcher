@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>The Outfit Edit · Colour Matcher</title>
+<title>The Outfit Edit · Your Wardrobe</title>
 <style>
 :root{--bg:#f8f5ee;--ink:#222722;--muted:#77796f;--line:#dedbd2;--card:#fffefa;--accent:#384e3f;--soft:#e9eee8;--shadow:0 14px 48px rgba(38,43,30,.06)}
 *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.45} button,input,select{font:inherit} button{cursor:pointer} button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #a1b8a1;outline-offset:2px} .wrap{max-width:1080px;margin:auto;padding:22px 22px 100px}
@@ -42,23 +42,25 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
 </style>
 </head>
 <body>
+
 <main class="wrap">
-<header><div class="logo">the outfit <span>edit.</span></div><div class="header-tag">A little more style. A lot less thinking.</div></header>
-<div class="topline">Your personal outfit wardrobe · Version 2</div>
-<h1>Good outfits, <em>on repeat.</em></h1>
-<p class="intro">Choose your clothing styles and colours. See them together, discover everyday combinations and save your favourites.</p>
-<div class="main">
-<section class="panel" aria-label="Choose your outfit">
-<div class="panel-head"><h2>Build your look</h2><span class="sub">01 / Select your pieces</span></div>
-<div class="group"><div class="group-title"><span>Top style</span><span>Choose a silhouette</span></div><div class="style-grid" id="stylePicker" aria-label="Filter tops by clothing style"></div><p class="style-helper" id="styleHelper">Select a style, then choose a colour from clothes you own.</p></div>
-<div class="group"><div class="group-title"><span>Top</span><span id="topCount"></span></div><div class="options" id="topOptions"></div></div>
-<div class="group"><div class="group-title"><span>Bottoms · Trousers & Shorts</span><span id="pantsCount"></span></div><div class="options" id="pantsOptions"></div></div>
-<div class="group"><div class="group-title"><span>Shoes</span><span id="shoesCount"></span></div><div class="options" id="shoesOptions"></div></div>
-<div class="actions"><button class="btn primary" id="shuffle" type="button">↻ &nbsp; Surprise me</button><button class="btn" id="save" type="button">♡ &nbsp; Save outfit</button></div>
-<p class="notice" id="notice" role="status" aria-live="polite"></p>
-</section>
-<section class="panel" aria-label="Outfit preview">
-<div class="panel-head"><h2>Your outfit</h2><span class="sub">02 / See it together</span></div>
+<header class="app-header"><div class="logo">the outfit <span>edit.</span></div><span class="header-tag">Your everyday style, sorted.</span></header>
+<nav id="mainNav" class="app-nav" aria-label="App sections">
+<button class="nav-tab active" type="button" data-tab="build" aria-current="page"><span class="nav-icon">✦</span><span>Build</span></button>
+<button class="nav-tab" type="button" data-tab="wardrobe"><span class="nav-icon">▦</span><span>Wardrobe</span></button>
+<button class="nav-tab" type="button" data-tab="saved"><span class="nav-icon">♡</span><span>Saved</span></button>
+</nav>
+<section id="view-build" class="view-pane" aria-label="Build an outfit">
+<div class="page-intro"><div class="topline">Outfit studio · Version 3</div><h1>Getting dressed, <em>made easy.</em></h1><p class="intro">Pick the occasion. We'll style the clothes you already own.</p></div>
+<div class="occasion-box"><h2>What are you dressing for?</h2><div class="filters occasion-filters" id="filters">
+<button type="button" class="chip" data-filter="all">✦ &nbsp; Any day</button>
+<button type="button" class="chip active" data-filter="office">▣ &nbsp; Work</button>
+<button type="button" class="chip" data-filter="weekend">☀ &nbsp; Weekend</button>
+<button type="button" class="chip" data-filter="dinner">☾ &nbsp; Going out</button>
+</div></div>
+<div class="build-layout">
+<section class="panel outfit-panel" aria-label="Your outfit preview">
+<div class="panel-head"><h2>Your outfit</h2><span class="sub">Built from your wardrobe</span></div>
 <div class="look-stage"><span class="stage-note">Style & colour preview · not to scale</span>
 <svg class="scene" role="img" aria-label="Illustration of your selected clothing and shoes" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
 <defs><filter id="sh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#313832" flood-opacity=".15"/></filter></defs>
@@ -72,17 +74,44 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
 <path id="leftShoe" d="M134 266 L153 266 L153 283 L143 288 L110 286 Q107 278 116 274 Z" fill="#f7f7f3" stroke="#666a60" stroke-width="1.5" filter="url(#sh)"/><path id="rightShoe" d="M166 266 L184 266 L203 275 Q213 280 209 286 L178 288 L167 282 Z" fill="#f7f7f3" stroke="#666a60" stroke-width="1.5" filter="url(#sh)"/>
 <path d="M113 282 L151 283 M169 283 L207 282" stroke="#bbbdb7" stroke-width="1.2"/>
 </svg></div>
-<div class="look-score"><span class="pill" id="quality">Excellent match</span><span class="sub" id="vibe">Smart casual</span></div><p class="style-note" id="styleAdvice">Choose the right shape for the occasion.</p>
+
+<div class="look-score"><span class="pill" id="quality">Excellent match</span><span class="sub" id="vibe">Smart casual</span></div>
 <h3 class="outfit-title" id="outfitTitle">Cream × Olive × White</h3>
-<p class="why" id="why">Soft cream lightens the earthy olive, while clean white sneakers keep it fresh.</p>
+<p class="why" id="why">Personal colour matching</p>
+<p class="style-note" id="styleAdvice">Select an occasion to begin.</p>
 <div class="pieces" id="pieceDetails"></div>
-<div class="actions"><button class="btn" id="copy" type="button">⎘ &nbsp; Copy outfit</button><button class="btn" id="viewSuggestions" type="button">See more combinations ↓</button></div>
+<div class="actions primary-actions">
+<button class="btn primary" id="shuffle" type="button">↻ &nbsp; Try another outfit</button>
+<button class="btn" id="save" type="button">♡ &nbsp; Save outfit</button></div>
+<div class="actions utility-actions"><button class="btn" id="copy" type="button">⎘ &nbsp; Copy outfit</button><button class="btn" id="viewSuggestions" type="button">More outfit ideas ↓</button></div>
+<p class="notice" id="notice" role="status" aria-live="polite"></p>
 </section>
-</div>
-<section class="section" id="ideas"><div class="section-head"><h2>Outfit ideas</h2><span class="sub" id="ideasCount"></span></div><div class="filters" id="filters"><button type="button" class="chip active" data-filter="all">All looks</button><button type="button" class="chip" data-filter="office">Office</button><button type="button" class="chip" data-filter="weekend">Weekend</button><button type="button" class="chip" data-filter="dinner">Dinner</button></div><div class="suggestions" id="suggestions"></div></section>
-<section class="section"><div class="section-head"><h2>Saved favourites</h2><span class="sub" id="favCount">0 saved</span></div><div class="fav-list" id="favourites"></div></section>
-<details class="panel manage" id="manage"><summary>Manage your wardrobe</summary><div class="manage-content"><p class="sub">Choose the actual garment type (including shorts), colour and sleeve length. Use the wardrobe list below to edit existing pieces. Everything stays on this device unless you export a backup.</p>
-<form id="addForm"><div class="field-grid"><label class="field wide"><span>Clothing type</span><select id="newClothingType">
+<aside class="builder-aside" aria-label="Personalise your outfit">
+<section class="panel quick-panel">
+<div class="panel-head"><h2>Change a piece</h2><span class="sub">One tap to swap</span></div>
+<p class="sub" style="font-size:13px">Tap any item to try another from your wardrobe.</p>
+<div class="quick-pieces" id="quickPieces"></div>
+<button type="button" id="quickAdd" class="btn subtle-btn">＋ Add clothing</button>
+</section>
+<details class="panel picker-panel" id="changePieces"><summary>Fine-tune your outfit <span class="summary-chevron">⌄</span></summary>
+<p class="sub">Choose a specific item or clothing shape.</p>
+<div class="group"><div class="group-title"><span>Top style</span><span>Choose a silhouette</span></div><div class="style-grid" id="stylePicker" aria-label="Filter tops by clothing style"></div><p class="style-helper" id="styleHelper">Select a style, then choose a colour from clothes you own.</p></div>
+<div class="group"><div class="group-title"><span>Top</span><span id="topCount"></span></div><div class="options" id="topOptions"></div></div>
+<div class="group"><div class="group-title"><span>Bottoms · Trousers & Shorts</span><span id="pantsCount"></span></div><div class="options" id="pantsOptions"></div></div>
+<div class="group"><div class="group-title"><span>Shoes</span><span id="shoesCount"></span></div><div class="options" id="shoesOptions"></div></div>
+
+</details>
+</aside></div>
+<section class="section" id="ideas"><div class="section-head"><h2>Outfit ideas</h2><span class="sub" id="ideasCount"></span></div><div class="suggestions" id="suggestions"></div></section>
+
+</section>
+<section id="view-wardrobe" class="view-pane" aria-label="Your wardrobe" hidden>
+<div class="page-intro"><div class="topline">Your collection</div><h1>Everything you <em>own.</em></h1><p class="intro">Add your basics once, then style them in endless combinations.</p></div>
+<div class="wardrobe-bar"><div><h2>My wardrobe</h2><p class="sub" id="wardrobeTotal">0 pieces</p></div><button class="btn primary" type="button" id="openWizard">＋ Add clothing</button></div>
+<div class="filters" id="wardrobeFilters"><button type="button" data-closet="all" class="chip active">All items</button><button type="button" data-closet="top" class="chip">Tops</button><button type="button" data-closet="pants" class="chip">Bottoms</button><button type="button" data-closet="shoes" class="chip">Shoes</button></div>
+<div class="wardrobe-grid" id="wardrobeGrid"></div>
+<details class="panel manage" id="manage"><summary>Manage your wardrobe</summary><div class="manage-content"><p class="sub">Tap an item below to edit its colour, type or name. Export a backup to transfer your wardrobe to another device.</p>
+<details class="advanced-add"><summary>Advanced: add exact clothing details</summary><form id="addForm"><div class="field-grid"><label class="field wide"><span>Clothing type</span><select id="newClothingType">
 <optgroup label="Tops">
 <option value="tee">T-shirt</option><option value="polo">Polo / knitted polo</option><option value="tank">Tank top / singlet</option>
 <option value="shirt">Casual / button-down shirt</option><option value="longtee">Long-sleeve tee</option>
@@ -90,10 +119,27 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
 </optgroup><optgroup label="Bottoms"><option value="pants">Trousers / chinos / jeans</option><option value="shorts">Shorts</option></optgroup>
 <optgroup label="Footwear"><option value="shoes">Shoes</option></optgroup></select></label>
 <label class="field" id="sleeveField"><span>Sleeve length</span><select id="newSleeve"><option value="none">Sleeveless</option><option value="short">Short sleeve</option><option value="long">Long sleeve</option></select></label>
-<label class="field"><span>Colour family</span><select id="newFamily"><option value="white">White</option><option value="cream">Cream</option><option value="beige">Beige / stone</option><option value="black">Black</option><option value="grey">Grey</option><option value="navy">Navy</option><option value="blue">Blue</option><option value="olive">Olive</option><option value="brown">Brown</option><option value="taupe">Taupe</option><option value="sage">Sage</option><option value="burgundy">Burgundy</option></select></label><label class="field wide"><span>Piece name</span><input id="newName" maxlength="48" placeholder="e.g. Navy linen shirt" required></label><label class="field"><span>Exact shade</span><input id="newColor" type="color" value="#f7f7f3"></label><div class="field" style="justify-content:end"><button class="btn primary" type="submit">+ Add to wardrobe</button></div></div></form>
+<label class="field"><span>Colour family</span><select id="newFamily"><option value="white">White</option><option value="cream">Cream</option><option value="beige">Beige / stone</option><option value="black">Black</option><option value="grey">Grey</option><option value="navy">Navy</option><option value="blue">Blue</option><option value="olive">Olive</option><option value="brown">Brown</option><option value="taupe">Taupe</option><option value="sage">Sage</option><option value="burgundy">Burgundy</option></select></label><label class="field wide"><span>Piece name</span><input id="newName" maxlength="48" placeholder="e.g. Navy linen shirt" required></label><label class="field"><span>Exact shade</span><input id="newColor" type="color" value="#f7f7f3"></label><div class="field" style="justify-content:end"><button class="btn primary" type="submit">+ Add to wardrobe</button></div></div></form></details>
 <div class="inventory" id="inventory"></div><div class="utility"><button class="btn" id="export" type="button">↓ Export backup</button><button class="btn" id="import" type="button">↑ Import backup</button><button class="btn" id="reset" type="button">Reset demo wardrobe</button><input type="file" id="importFile" accept="application/json,.json" hidden></div><p class="footnote">Your wardrobe and favourites use this browser's local storage. They are not synced between devices. Back up before clearing browser data or switching phones. The outfit guidance is style advice, not a universal colour rule.</p></div></details>
-<div class="footer">THE OUTFIT EDIT · Made for your real wardrobe · No account, tracking or AI required</div>
+
+</section>
+<section id="view-saved" class="view-pane" aria-label="Saved outfits" hidden>
+<div class="page-intro"><div class="topline">Your favourites</div><h1>Looks worth <em>repeating.</em></h1><p class="intro">Your best outfit combinations are always one tap away.</p></div>
+<section class="section"><div class="section-head"><h2>Saved favourites</h2><span class="sub" id="favCount">0 saved</span></div><div class="fav-list" id="favourites"></div></section>
+
+</section>
+<div class="footer">THE OUTFIT EDIT · Your personal wardrobe · Offline-friendly · No account required</div>
 </main>
+<div id="wizardOverlay" class="wizard-overlay" hidden>
+<section class="wizard-dialog" role="dialog" aria-modal="true" aria-labelledby="wizardHeading">
+<div class="wizard-heading"><div><div class="topline">Your wardrobe</div><h2 id="wizardHeading">Add clothing</h2></div><button class="wizard-close" id="wizardClose" type="button" aria-label="Close clothing entry">×</button></div>
+<div class="wizard-progress" id="wizardProgress" aria-label="Progress"><span></span><span></span><span></span></div>
+<p class="wizard-lead" id="wizardLead">Choose the type of clothing</p>
+<div class="wizard-body" id="wizardContent"></div>
+<div class="wizard-footer"><button class="btn" type="button" id="wizardBack">Back</button><button class="btn primary" type="button" id="wizardNext">Continue →</button></div>
+</section>
+</div>
+
 <script>
 (()=>{'use strict';
 const defaults=[
