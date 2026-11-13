@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f8f5ee">
+<meta name="description" content="Your personal outfit colour matcher — build combinations from your own wardrobe.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>The Outfit Edit · Colour Matcher</title>
+<style>
+:root{--bg:#f8f5ee;--ink:#222722;--muted:#77796f;--line:#dedbd2;--card:#fffefa;--accent:#384e3f;--soft:#e9eee8;--shadow:0 14px 48px rgba(38,43,30,.06)}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.45} button,input,select{font:inherit} button{cursor:pointer} button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #a1b8a1;outline-offset:2px} .wrap{max-width:1080px;margin:auto;padding:22px 22px 100px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0 30px}.logo{font-family:Georgia,serif;font-weight:700;font-size:22px;letter-spacing:-.8px}.logo span{color:#8c9a87}.header-tag{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:40px;padding:7px 12px} .topline{text-transform:uppercase;letter-spacing:2.5px;font-size:11px;font-weight:700;color:#72816e;margin-bottom:12px} h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(37px,6vw,65px);line-height:1.05;letter-spacing:-2px;margin:0 0 15px;max-width:730px}.intro{color:#686e65;font-size:15px;max-width:620px;margin:0 0 34px}.main{display:grid;grid-template-columns:minmax(0,1.13fr) minmax(0,.87fr);gap:18px;align-items:start}.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:23px;box-shadow:var(--shadow)}.panel-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;margin-bottom:8px}.panel-head h2{font-family:Georgia,serif;font-size:24px;font-weight:500;margin:0}.sub{color:var(--muted);font-size:12px}.group{margin-top:22px}.group-title{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:10px}.group-title span+span{font-size:12px;color:var(--muted);font-weight:400}.options{display:flex;gap:9px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}.option{flex:0 0 auto;min-width:111px;max-width:148px;display:flex;align-items:center;gap:8px;padding:10px 11px;border:1px solid #e5e1d8;border-radius:13px;background:#fff;text-align:left;color:var(--ink);transition:border-color .15s,background .15s,transform .15s}.option:hover{transform:translateY(-1px)} .option.active{border:2px solid var(--accent);padding:9px 10px;background:#f0f4ef}.swatch{width:26px;height:26px;flex:0 0 26px;border:1px solid rgba(0,0,0,.09);border-radius:50%}.option-label{font-size:12px;line-height:1.2;overflow-wrap:anywhere}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:23px}.btn{border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-weight:650;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#fff;color:var(--ink)}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn:hover{filter:brightness(.97)}.btn:disabled{opacity:.45;cursor:not-allowed}.look-stage{background:#e9e9df;border-radius:15px;min-height:310px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;border:1px solid #e4e4d9}.stage-note{position:absolute;top:17px;left:18px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#6c7368;font-weight:700}.scene{width:100%;max-width:360px}.look-score{margin:18px 0 8px;display:flex;align-items:center;justify-content:space-between;gap:8px}.pill{font-size:11px;font-weight:750;border-radius:20px;background:#e4ece1;color:#3d5744;padding:6px 10px}.outfit-title{font-family:Georgia,serif;font-weight:500;font-size:24px;margin:0 0 5px}.why{font-size:13px;color:#697068;min-height:57px;margin:4px 0 10px}.pieces{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:18px 0 4px}.piece{background:#f6f4ee;border:1px solid #ebe8df;border-radius:11px;padding:9px;min-width:0}.piece .dot{display:inline-block;width:12px;height:12px;border-radius:50%;border:1px solid #ccc;vertical-align:middle;margin-right:4px}.piece small{display:block;color:#77796f;font-size:10px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px}.piece strong{display:block;font-size:11px;line-height:1.25;overflow-wrap:anywhere}.section{margin-top:25px}.section-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}.section h2{font-family:Georgia,serif;font-weight:500;font-size:26px;margin:0}.filters{display:flex;gap:7px;overflow-x:auto;padding:3px 0 13px}.chip{white-space:nowrap;border:1px solid #d9d8ce;background:transparent;color:#62675e;border-radius:30px;padding:8px 13px;font-size:12px}.chip.active{background:#354c3a;border-color:#354c3a;color:white}.suggestions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.suggestion{border:1px solid #e2dfd6;background:#fffefa;border-radius:14px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:10px}.suggestion:hover{border-color:#647c68}.mini-colours{display:flex;height:39px;border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,.07)}.mini-colours i{flex:1}.s-label{font-size:12px;font-weight:700}.s-desc{font-size:11px;color:#7a7d74}.mini-badge{font-size:10px;color:#526851}.manage{margin-top:24px}.manage summary{font-weight:750;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;font-size:14px}.manage summary:after{content:'+';font-size:20px;font-weight:400}.manage[open] summary:after{content:'−'}.manage-content{padding-top:18px}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:650}.field.wide{grid-column:1/-1}.field input,.field select{min-width:0;width:100%;border:1px solid #d9d6cc;background:#fff;border-radius:9px;padding:10px;font-size:13px;color:var(--ink)}.field input[type=color]{height:43px;padding:4px}.hint{font-size:11px;color:#7a7e75;margin:11px 0}.inventory{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}.inventory-col{background:#f6f4ed;border:1px solid #ebe7df;border-radius:12px;padding:9px;min-width:0}.inventory-col h3{margin:0 0 9px;font-size:12px}.inventory-item{font-size:11px;display:flex;gap:6px;align-items:center;justify-content:space-between;padding:7px 0;border-top:1px solid #e1dfd6}.inventory-item label{display:flex;align-items:center;gap:5px;min-width:0;overflow-wrap:anywhere}.delete{border:0;background:transparent;color:#7a5750;font-size:17px;padding:2px 5px}.utility{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap}.utility .btn{padding:9px 11px;font-size:11px}.footnote{margin-top:14px;color:#8a8b82;font-size:11px;line-height:1.5}.fav-list{display:grid;gap:8px}.fav{display:flex;gap:9px;justify-content:space-between;align-items:center;padding:12px;border:1px solid #e3e0d7;border-radius:13px;background:#fffefa}.fav-name{font-size:12px;font-weight:650}.fav-swatch{display:flex;gap:4px;margin-top:6px}.fav-swatch span{width:15px;height:15px;border:1px solid rgba(0,0,0,.1);border-radius:50%}.fav-actions{display:flex;gap:3px}.fav-actions button{border:0;background:transparent;font-size:12px;padding:7px;color:#3d5844}.empty{font-size:13px;color:#85877c;padding:14px;border:1px dashed #d2d3c9;border-radius:12px}.notice{font-size:12px;color:#5c705c;min-height:18px;margin:9px 0 0}.footer{text-align:center;color:#8c8d83;font-size:11px;padding:30px 0}.mobile-tabs{display:none}
+@media(max-width:760px){.wrap{padding:14px 13px 70px}header{padding:3px 0 24px}.header-tag{display:none}h1{letter-spacing:-1.3px}.intro{font-size:14px;margin-bottom:25px}.main{grid-template-columns:1fr}.panel{padding:17px;border-radius:18px}.look-stage{min-height:285px}.scene{max-width:320px}.suggestions{grid-template-columns:repeat(2,minmax(0,1fr))}.inventory{grid-template-columns:1fr}.inventory-col{display:block}.inventory-col h3{margin-bottom:3px}.section-head{align-items:baseline}.section h2{font-size:23px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header><div class="logo">the outfit <span>edit.</span></div><div class="header-tag">A little more style. A lot less thinking.</div></header>
+<div class="topline">Your personal colour wardrobe</div>
+<h1>Good outfits, <em>on repeat.</em></h1>
+<p class="intro">Mix the pieces you already own. Discover easy colour combinations, save your favourites and know exactly what to buy next.</p>
+<div class="main">
+<section class="panel" aria-label="Choose your outfit">
+<div class="panel-head"><h2>Build your look</h2><span class="sub">01 / Select your pieces</span></div>
+<div class="group"><div class="group-title"><span>Top</span><span id="topCount"></span></div><div class="options" id="topOptions"></div></div>
+<div class="group"><div class="group-title"><span>Trousers</span><span id="pantsCount"></span></div><div class="options" id="pantsOptions"></div></div>
+<div class="group"><div class="group-title"><span>Shoes</span><span id="shoesCount"></span></div><div class="options" id="shoesOptions"></div></div>
+<div class="actions"><button class="btn primary" id="shuffle" type="button">↻ &nbsp; Surprise me</button><button class="btn" id="save" type="button">♡ &nbsp; Save outfit</button></div>
+<p class="notice" id="notice" role="status" aria-live="polite"></p>
+</section>
+<section class="panel" aria-label="Outfit preview">
+<div class="panel-head"><h2>Your outfit</h2><span class="sub">02 / See it together</span></div>
+<div class="look-stage"><span class="stage-note">Colour preview · not to scale</span>
+<svg class="scene" role="img" aria-label="Illustration of your selected shirt, trousers and shoes" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+<defs><filter id="sh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#313832" flood-opacity=".15"/></filter></defs>
+<ellipse cx="162" cy="288" rx="100" ry="11" fill="#b9c1b4" opacity=".32"/>
+<!-- top -->
+<path id="shirtShape" d="M121 39 L139 28 Q160 39 181 28 L199 39 L224 63 L208 93 L190 82 L187 148 L133 148 L130 82 L112 93 L96 63 Z" fill="#efe7d6" stroke="#5f655c" stroke-width="1.5" stroke-linejoin="round" filter="url(#sh)"/>
+<path id="collarShape" d="M140 28 Q160 57 180 28 L169 37 Q160 50 151 37 Z" fill="#e4d7bd" stroke="#5f655c" stroke-width="1.1"/><path d="M160 44 L160 66" stroke="#74796f" stroke-width="1.2" opacity=".6"/><circle cx="160" cy="54" r="1.6" fill="#777b76"/>
+<!-- pants -->
+<path id="pantsShape" d="M131 152 L189 152 L193 217 L184 272 L163 272 L159 206 L156 206 L154 272 L133 272 L126 218 Z" fill="#66734f" stroke="#5a5d55" stroke-width="1.5" stroke-linejoin="round" filter="url(#sh)"/>
+<path d="M130 160 H190 M160 156 L160 200" stroke="#70766e" stroke-width="1" opacity=".6"/>
+<!-- shoes -->
+<path id="leftShoe" d="M134 266 L153 266 L153 283 L143 288 L110 286 Q107 278 116 274 Z" fill="#f7f7f3" stroke="#666a60" stroke-width="1.5" filter="url(#sh)"/><path id="rightShoe" d="M166 266 L184 266 L203 275 Q213 280 209 286 L178 288 L167 282 Z" fill="#f7f7f3" stroke="#666a60" stroke-width="1.5" filter="url(#sh)"/>
+<path d="M113 282 L151 283 M169 283 L207 282" stroke="#bbbdb7" stroke-width="1.2"/>
+</svg></div>
+<div class="look-score"><span class="pill" id="quality">Excellent match</span><span class="sub" id="vibe">Smart casual</span></div>
+<h3 class="outfit-title" id="outfitTitle">Cream × Olive × White</h3>
+<p class="why" id="why">Soft cream lightens the earthy olive, while clean white sneakers keep it fresh.</p>
+<div class="pieces" id="pieceDetails"></div>
+<div class="actions"><button class="btn" id="copy" type="button">⎘ &nbsp; Copy outfit</button><button class="btn" id="viewSuggestions" type="button">See more combinations ↓</button></div>
+</section>
+</div>
+<section class="section" id="ideas"><div class="section-head"><h2>Outfit ideas</h2><span class="sub" id="ideasCount"></span></div><div class="filters" id="filters"><button type="button" class="chip active" data-filter="all">All looks</button><button type="button" class="chip" data-filter="office">Office</button><button type="button" class="chip" data-filter="weekend">Weekend</button><button type="button" class="chip" data-filter="dinner">Dinner</button></div><div class="suggestions" id="suggestions"></div></section>
+<section class="section"><div class="section-head"><h2>Saved favourites</h2><span class="sub" id="favCount">0 saved</span></div><div class="fav-list" id="favourites"></div></section>
+<details class="panel manage" id="manage"><summary>Manage your wardrobe</summary><div class="manage-content"><p class="sub">Add pieces you own to see new outfit combinations. Tap a colour to update its shade. Everything stays on this device unless you export a backup.</p>
+<form id="addForm"><div class="field-grid"><label class="field"><span>Type</span><select id="newType"><option value="top">Top</option><option value="pants">Trousers</option><option value="shoes">Shoes</option></select></label><label class="field"><span>Colour family</span><select id="newFamily"><option value="white">White</option><option value="cream">Cream</option><option value="beige">Beige / stone</option><option value="black">Black</option><option value="grey">Grey</option><option value="navy">Navy</option><option value="blue">Blue</option><option value="olive">Olive</option><option value="brown">Brown</option><option value="taupe">Taupe</option><option value="sage">Sage</option><option value="burgundy">Burgundy</option></select></label><label class="field wide"><span>Piece name</span><input id="newName" maxlength="48" placeholder="e.g. Navy linen shirt" required></label><label class="field"><span>Exact shade</span><input id="newColor" type="color" value="#f7f7f3"></label><div class="field" style="justify-content:end"><button class="btn primary" type="submit">+ Add to wardrobe</button></div></div></form>
+<div class="inventory" id="inventory"></div><div class="utility"><button class="btn" id="export" type="button">↓ Export backup</button><button class="btn" id="import" type="button">↑ Import backup</button><button class="btn" id="reset" type="button">Reset demo wardrobe</button><input type="file" id="importFile" accept="application/json,.json" hidden></div><p class="footnote">Your wardrobe and favourites use this browser's local storage. They are not synced between devices. Back up before clearing browser data or switching phones. The outfit guidance is style advice, not a universal colour rule.</p></div></details>
+<div class="footer">THE OUTFIT EDIT · Made for your real wardrobe · No account, tracking or AI required</div>
+</main>
+<script>
+(()=>{'use strict';
+const defaults=[
+{id:'t-black',type:'top',name:'Black knit polo',family:'black',color:'#252627'},
+{id:'t-cream',type:'top',name:'Cream knit polo',family:'cream',color:'#e8dcc4'},
+{id:'t-blue',type:'top',name:'Blue knit polo',family:'blue',color:'#91b0c5'},
+{id:'p-olive',type:'pants',name:'Olive trousers',family:'olive',color:'#687553'},
+{id:'p-black',type:'pants',name:'Black trousers',family:'black',color:'#28292b'},
+{id:'p-grey',type:'pants',name:'Grey trousers',family:'grey',color:'#737575'},
+{id:'s-grey',type:'shoes',name:'Grey shoes',family:'grey',color:'#a1a3a4'},
+{id:'s-white',type:'shoes',name:'White shoes',family:'white',color:'#f5f4ed'},
+{id:'s-black',type:'shoes',name:'Black shoes',family:'black',color:'#292a2c'}
+];
+const palette={white:'#f5f4ef',cream:'#e8dcc4',beige:'#c6b799',black:'#292a2c',grey:'#777b7c',navy:'#283c57',blue:'#91b0c5',olive:'#687553',brown:'#7b5944',taupe:'#b1a18c',sage:'#a0ac92',burgundy:'#723e4c'};
+const KEY='outfit-edit-v1';const copy=(x)=>JSON.parse(JSON.stringify(x));
+let state={items:copy(defaults),selected:{top:'t-cream',pants:'p-olive',shoes:'s-white'},favourites:[]};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.items)&&s.selected&&Array.isArray(s.favourites))state=s;}catch(_){}
+let filter='all',lastShuffle=-1;
+const $=id=>document.getElementById(id);const typeLabel={top:'Tops',pants:'Trousers',shoes:'Shoes'};
+const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+const validColor=c=>/^#[0-9a-f]{6}$/i.test(c);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(_){notice('Browser storage is unavailable. Export a backup to keep your edits.');}}
+function notice(s){$('notice').textContent=s;clearTimeout(notice._t);notice._t=setTimeout(()=>$('notice').textContent='',3500)}
+function piece(type){return state.items.find(p=>p.id===state.selected[type])||state.items.find(p=>p.type===type)}
+function current(){return ['top','pants','shoes'].map(piece)}
+function signature(a){return a.map(x=>x.id).join('|')}
+const baseMatches={
+'cream|olive|white':[98,'Soft cream brightens olive, and clean white shoes keep the outfit fresh.'],
+'black|grey|black':[97,'A sleek tonal combination: grey breaks up the black without losing polish.'],
+'blue|black|white':[96,'Blue adds a little colour; black trousers keep it sharp and white shoes lighten the finish.'],
+'cream|black|black':[96,'A timeless high-contrast pairing — sophisticated without feeling overdressed.'],
+'cream|grey|white':[95,'Light neutrals and mid-grey feel easy, clean and quietly polished.'],
+'black|olive|black':[94,'Earthy olive softens black, while black footwear ties the top and bottom together.'],
+'blue|grey|white':[93,'Cool blue and grey naturally sit together; white keeps the outfit from feeling too flat.'],
+'blue|olive|white':[88,'A muted blue works with olive for a relaxed, slightly unexpected combination.'],
+'black|black|black':[86,'All-black is clean and streamlined. A textured knit prevents it looking flat.'],
+'black|black|white':[89,'An all-black base with a brighter, more casual finish.'],
+'cream|black|white':[93,'High contrast up top, with white shoes to echo the light cream.'],
+'black|grey|white':[89,'Neutral and sporty-smart, especially with minimal white sneakers.'],
+'cream|olive|black':[86,'Classic earth tones with a more grounded, dressier black finish.'],
+'blue|black|black':[92,'Cool blue adds contrast to an otherwise dark, modern look.'],
+'cream|beige|white':[88,'A soft tonal look. Distinct textures make the close colours intentional.'],
+'navy|beige|white':[98,'Navy against beige is a timeless contrast; white shoes make it effortless.'],
+'white|olive|white':[97,'Clean white and olive are a dependable casual pairing.'],
+'white|grey|white':[91,'Crisp white and grey keep the outfit balanced and minimal.'],
+'white|black|white':[97,'Sharp black-and-white contrast, ideal for easy daily dressing.'],
+'cream|navy|brown':[98,'Warm cream, deep navy and brown create a polished classic.'],
+'white|navy|white':[94,'A crisp, everyday combination that rarely feels overdone.'],
+'olive|beige|white':[90,'Two earthy tones with a bright, clean finish.'],
+'brown|beige|white':[91,'Warm neutrals look cohesive and relaxed together.']
+};
+const neutrals=new Set(['black','white','cream','grey','beige','navy','taupe']);
+function score(a){const [t,p,s]=a;if(!t||!p||!s)return {score:0,label:'Incomplete',why:'Add a top, trousers and shoes.'};const k=[t.family,p.family,s.family].join('|');if(baseMatches[k])return{score:baseMatches[k][0],why:baseMatches[k][1],label:baseMatches[k][0]>=92?'Excellent match':'Good match'};
+let n=65; if(neutrals.has(t.family))n+=8;if(neutrals.has(p.family))n+=7;if(neutrals.has(s.family))n+=8;
+if(t.family===p.family)n-=8;if(s.family===t.family||s.family===p.family)n+=4;
+if(['white','cream'].includes(t.family)&&['navy','olive','black','grey','brown'].includes(p.family))n+=9;
+if(t.family==='blue'&&['navy','grey','black','beige'].includes(p.family))n+=6;
+if(t.family==='burgundy'&&['grey','navy','black'].includes(p.family))n+=6;
+if(t.family==='sage'&&['beige','navy','black','grey'].includes(p.family))n+=5;
+n=Math.min(95,Math.max(60,n));return {score:n,label:n>=91?'Excellent match':n>=80?'Good match':'Try it on',why:n>=91?'Balanced colours with enough contrast to look intentional.':n>=80?'A versatile mix of shades. Try it on to check the balance and fabric textures.':'More experimental colour pairing. Try it on in natural light before deciding.'}}
+function occasionFit(a,occ){const [t,p,s]=a;const dark=['black','brown','navy'].includes(s.family);if(occ==='office')return (t.name.toLowerCase().includes('polo')||t.name.toLowerCase().includes('shirt')?5:0)+(p.family!=='white'?2:0);
+if(occ==='dinner')return(dark?9:0)+(['black','navy','grey'].includes(p.family)?6:0)+(t.family==='cream'?3:0);
+if(occ==='weekend')return(s.family==='white'?9:0)+(t.name.toLowerCase().includes('tee')?5:0);return 0;}
+function allOutfits(){const ts=state.items.filter(x=>x.type==='top'),ps=state.items.filter(x=>x.type==='pants'),ss=state.items.filter(x=>x.type==='shoes');const result=[];for(const t of ts)for(const p of ps)for(const s of ss){const a=[t,p,s];result.push({a,...score(a)})}return result.sort((a,b)=>(b.score+occasionFit(b.a,filter))-(a.score+occasionFit(a.a,filter)));}
+function familyTitle(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+function outfitName(a){return a.map(x=>familyTitle(x.family)).join(' × ')}
+function selectTriple(a){state.selected={top:a[0].id,pants:a[1].id,shoes:a[2].id};save();render();window.scrollTo({top:0,behavior:'smooth'});}
+function ensureSelected(){for(const type of ['top','pants','shoes']){const x=state.items.find(x=>x.id===state.selected[type]&&x.type===type);if(!x){const first=state.items.find(x=>x.type===type);state.selected[type]=first?first.id:null}}}
+function renderOptions(){for(const type of ['top','pants','shoes']){const arr=state.items.filter(x=>x.type===type);$(type+'Count').textContent=arr.length+' pieces';$(type+'Options').innerHTML=arr.map(x=>`<button class="option ${state.selected[type]===x.id?'active':''}" type="button" data-id="${escapeHtml(x.id)}" aria-pressed="${state.selected[type]===x.id}"><span class="swatch" style="background:${x.color}"></span><span class="option-label">${escapeHtml(x.name)}</span></button>`).join('');$(type+'Options').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{state.selected[type]=b.dataset.id;save();render();}));}}
+function renderLook(){const a=current();if(a.some(x=>!x))return;const s=score(a);$('shirtShape').setAttribute('fill',a[0].color);$('collarShape').setAttribute('fill',a[0].color);$('pantsShape').setAttribute('fill',a[1].color);$('leftShoe').setAttribute('fill',a[2].color);$('rightShoe').setAttribute('fill',a[2].color);$('outfitTitle').textContent=outfitName(a);$('quality').textContent=s.label;$('why').textContent=s.why;$('vibe').textContent=s.score>=91?'Effortless smart casual':'Style experiment';$('pieceDetails').innerHTML=a.map((x,i)=>`<div class="piece"><small>${['Top','Trousers','Shoes'][i]}</small><strong><span class="dot" style="background:${x.color}"></span>${escapeHtml(x.name)}</strong></div>`).join('');const saved=state.favourites.some(f=>f.join('|')===signature(a));$('save').textContent=saved?'♥  Saved':'♡  Save outfit';}
+function renderSuggestions(){const arr=allOutfits().slice(0,9);$('ideasCount').textContent=allOutfits().length+' combinations';$('suggestions').innerHTML=arr.map(x=>`<button class="suggestion" type="button" data-signature="${signature(x.a)}"><div class="mini-colours">${x.a.map(c=>`<i style="background:${c.color}"></i>`).join('')}</div><div><div class="s-label">${escapeHtml(outfitName(x.a))}</div><div class="s-desc">${escapeHtml(x.a.map(i=>i.name).join(' · '))}</div></div><span class="mini-badge">${x.label} →</span></button>`).join('');$('suggestions').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const ids=b.dataset.signature.split('|');const a=ids.map(id=>state.items.find(i=>i.id===id));if(a.every(Boolean))selectTriple(a);}));}
+function renderFavs(){const arr=state.favourites.map(f=>f.map(id=>state.items.find(x=>x.id===id))).filter(a=>a.every(Boolean));$('favCount').textContent=arr.length+' saved';$('favourites').innerHTML=arr.length?arr.map(a=>`<div class="fav"><div><div class="fav-name">${escapeHtml(outfitName(a))}</div><div class="fav-swatch">${a.map(x=>`<span style="background:${x.color}" title="${escapeHtml(x.name)}"></span>`).join('')}</div></div><div class="fav-actions"><button data-action="wear" data-key="${signature(a)}" type="button" aria-label="Choose outfit">Wear ↗</button><button data-action="remove" data-key="${signature(a)}" type="button" aria-label="Remove favourite">✕</button></div></div>`).join(''):'<div class="empty">No favourites yet. Find a combination you like, then tap “Save outfit”.</div>';
+$('favourites').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const ids=b.dataset.key.split('|');if(b.dataset.action==='remove'){state.favourites=state.favourites.filter(f=>f.join('|')!==b.dataset.key);save();render();}else selectTriple(ids.map(id=>state.items.find(x=>x.id===id)));}));}
+function renderInventory(){ $('inventory').innerHTML=['top','pants','shoes'].map(type=>`<div class="inventory-col"><h3>${typeLabel[type]}</h3>${state.items.filter(i=>i.type===type).map(i=>`<div class="inventory-item"><label><input type="color" data-id="${escapeHtml(i.id)}" value="${i.color}" aria-label="Change shade of ${escapeHtml(i.name)}"><span>${escapeHtml(i.name)}</span></label><button class="delete" type="button" data-remove="${escapeHtml(i.id)}" title="Remove ${escapeHtml(i.name)}" aria-label="Remove ${escapeHtml(i.name)}">×</button></div>`).join('')}</div>`).join('');$('inventory').querySelectorAll('input[type="color"]').forEach(el=>el.addEventListener('input',()=>{const p=state.items.find(i=>i.id===el.dataset.id);if(p&&validColor(el.value)){p.color=el.value;save();renderLook();renderOptions();renderSuggestions();renderFavs();}}));$('inventory').querySelectorAll('button[data-remove]').forEach(el=>el.addEventListener('click',()=>{const p=state.items.find(i=>i.id===el.dataset.remove);if(!p)return;if(state.items.filter(i=>i.type===p.type).length<2){notice('Keep at least one item in each category.');return;}if(!confirm('Remove '+p.name+' from your wardrobe?'))return;state.items=state.items.filter(i=>i.id!==p.id);state.favourites=state.favourites.filter(f=>!f.includes(p.id));ensureSelected();save();render();}));}
+function render(){ensureSelected();renderOptions();renderLook();renderSuggestions();renderFavs();renderInventory();}
+$('shuffle').addEventListener('click',()=>{const choices=allOutfits().slice(0,Math.max(1,Math.min(12,allOutfits().length))).filter(x=>signature(x.a)!==signature(current()));if(!choices.length)return;const pos=Math.floor(Math.random()*choices.length);selectTriple(choices[pos].a)});
+$('save').addEventListener('click',()=>{const a=current();if(a.some(x=>!x))return;const sig=signature(a);if(state.favourites.some(f=>f.join('|')===sig)){state.favourites=state.favourites.filter(f=>f.join('|')!==sig);notice('Removed from favourites.')}else{state.favourites.push(a.map(x=>x.id));notice('Saved to favourites.')}save();render();});
+$('copy').addEventListener('click',async()=>{const a=current();if(a.some(x=>!x))return;const msg=a.map(x=>x.name).join(' + ');try{await navigator.clipboard.writeText(msg);notice('Outfit copied!')}catch(_){notice('Copy not supported here: '+msg)}});
+$('viewSuggestions').addEventListener('click',()=>$('ideas').scrollIntoView({behavior:'smooth'}));
+$('filters').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;$('filters').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderSuggestions();}));
+$('newFamily').addEventListener('change',e=>{$('newColor').value=palette[e.target.value]});
+$('addForm').addEventListener('submit',e=>{e.preventDefault();const type=$('newType').value,name=$('newName').value.trim(),family=$('newFamily').value,color=$('newColor').value;if(!['top','pants','shoes'].includes(type)||!palette[family]||!validColor(color)||!name)return;const id='custom-'+Date.now()+'-'+Math.floor(Math.random()*100000);state.items.push({id,type,name: name.slice(0,48),family,color});state.selected[type]=id;save();render();$('newName').value='';notice('Added '+name+' to your wardrobe.');});
+$('export').addEventListener('click',()=>{const blob=new Blob([JSON.stringify({version:1,...state},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='outfit-edit-wardrobe-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);});
+$('import').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const v=JSON.parse(await file.text());if(!Array.isArray(v.items)||!v.selected||!Array.isArray(v.favourites)||v.items.length>500||!v.items.every(x=>x&&typeof x.id==='string'&&x.id.length<120&&typeof x.name==='string'&&x.name.length<120&&['top','pants','shoes'].includes(x.type)&&typeof x.family==='string'&&palette[x.family]&&validColor(x.color))||!['top','pants','shoes'].every(type=>v.items.some(x=>x.type===type)))throw Error('Invalid backup');state={items:v.items,selected:v.selected,favourites:v.favourites.filter(a=>Array.isArray(a)&&a.length===3)};ensureSelected();save();render();notice('Wardrobe restored.')}catch(_){notice('This file is not a valid Outfit Edit backup.')}e.target.value='';});
+$('reset').addEventListener('click',()=>{if(!confirm('Reset all clothes and saved outfits to the original sample wardrobe?'))return;state={items:copy(defaults),selected:{top:'t-cream',pants:'p-olive',shoes:'s-white'},favourites:[]};save();render();notice('Original wardrobe restored.');});
+$('newColor').value=palette.white;render();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+})();
+</script>
+</body>
+</html>
