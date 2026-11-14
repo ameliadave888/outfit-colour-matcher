@@ -131,6 +131,27 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
 @media(max-width:340px){.wizard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.occasion-filters .chip{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.view-pane{animation:none}}
 
+/* Immediate feedback; keep the existing palette and geometry. */
+button,summary{touch-action:manipulation}
+button:not(:disabled):active{filter:brightness(.92);transition:none}
+.option:active,.wardrobe-card:active{transform:none}
+button,summary{min-height:44px}
+.delete,.rename,.fav-actions button{min-width:44px}
+.wizard-close{width:44px;height:44px;flex:0 0 44px}
+.wizard-dialog{display:flex;flex-direction:column;overflow:hidden}
+.wizard-body{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:3px;scroll-padding:12px}
+.wizard-heading,.wizard-progress,.wizard-lead,.wizard-footer{flex-shrink:0}
+.wizard-footer{padding-top:12px;margin-top:10px;border-top:1px solid var(--line)}
+.wizard-field input,.wizard-field select{font-size:16px}
+#wizardLead:focus{outline:none}
+@media(hover:none){.option:hover,.wardrobe-card:hover{transform:none}}
+@media(max-width:760px){
+ .wrap{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
+ .app-nav{bottom:0;padding-bottom:calc(9px + env(safe-area-inset-bottom))}
+ .wizard-dialog{max-height:93dvh;padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+}
+@media(prefers-reduced-motion:reduce){button:active{transform:none}}
+
 </style>
 </head>
 <body>
@@ -223,10 +244,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
 <div class="footer">THE OUTFIT EDIT · Your personal wardrobe · Offline-friendly · No account required</div>
 </main>
 <div id="wizardOverlay" class="wizard-overlay" hidden>
-<section class="wizard-dialog" role="dialog" aria-modal="true" aria-labelledby="wizardHeading">
+<section class="wizard-dialog" role="dialog" aria-modal="true" aria-labelledby="wizardHeading" aria-describedby="wizardLead">
 <div class="wizard-heading"><div><div class="topline">Your wardrobe</div><h2 id="wizardHeading">Add clothing</h2></div><button class="wizard-close" id="wizardClose" type="button" aria-label="Close clothing entry">×</button></div>
 <div class="wizard-progress" id="wizardProgress" aria-label="Progress"><span></span><span></span><span></span></div>
-<p class="wizard-lead" id="wizardLead">Choose the type of clothing</p>
+<p class="wizard-lead" id="wizardLead" tabindex="-1" aria-live="polite">Choose the type of clothing</p>
 <div class="wizard-body" id="wizardContent"></div>
 <div class="wizard-footer"><button class="btn" type="button" id="wizardBack">Back</button><button class="btn primary" type="button" id="wizardNext">Continue →</button></div>
 </section>
@@ -252,6 +273,7 @@ let state={items:copy(defaults),selected:{top:'t-cream',pants:'p-olive',shoes:'s
 try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.items)&&s.selected&&Array.isArray(s.favourites))state=s;}catch(_){}
 state.items=state.items.map(normaliseTop).map(normaliseBottom);
 let filter='office',styleFilter='all',lastShuffle=-1;
+const tabScroll={build:0,wardrobe:0,saved:0};
 let currentTab='build',wardrobeFilter='all',wizardStep=1,wizard=null,lastWizardFocus=null;
 const $=id=>document.getElementById(id);const typeLabel={top:'Tops',pants:'Bottoms',shoes:'Shoes'};
 const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
@@ -446,8 +468,10 @@ $('inventory').querySelectorAll('select[data-sleeve]').forEach(el=>el.addEventLi
 $('inventory').querySelectorAll('button[data-rename]').forEach(el=>el.addEventListener('click',()=>{const p=state.items.find(i=>i.id===el.dataset.rename);if(!p)return;const name=prompt('Rename this piece',p.name);if(name===null||!name.trim())return;p.name=name.trim().slice(0,48);save();render();}));
 $('inventory').querySelectorAll('button[data-remove]').forEach(el=>el.addEventListener('click',()=>{const p=state.items.find(i=>i.id===el.dataset.remove);if(!p)return;if(state.items.filter(i=>i.type===p.type).length<2){notice('Keep at least one item in each category.');return;}if(!confirm('Remove '+p.name+' from your wardrobe?'))return;state.items=state.items.filter(i=>i.id!==p.id);state.favourites=state.favourites.filter(f=>!f.includes(p.id));ensureSelected();if(p.type==='top')styleFilter='all';save();render();}));
 }
-function switchTab(tab){
+function switchTab(tab,restoreScroll=false){
  if(!['build','wardrobe','saved'].includes(tab))return;
+ const changed=currentTab!==tab;
+ if(changed)tabScroll[currentTab]=window.scrollY;
  currentTab=tab;
  ['build','wardrobe','saved'].forEach(name=>{
   $('view-'+name).hidden=name!==tab;
@@ -457,7 +481,11 @@ function switchTab(tab){
   b.classList.toggle('active',active);
   if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
  });
- window.scrollTo(0,0);
+ window.scrollTo({top:changed&&restoreScroll?tabScroll[tab]:0,behavior:'instant'});
+ if(changed&&!$('view-'+tab).contains(document.activeElement)&&!$('mainNav').contains(document.activeElement)){
+  const heading=$('view-'+tab).querySelector('h1,h2');
+  if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
+ }
 }
 
 function shoeThumbnail(item){
@@ -480,12 +508,12 @@ const arr=current();
 $('quickPieces').innerHTML=arr.map((x,k)=>`<button type="button" data-cycle="${['top','pants','shoes'][k]}" title="Try another ${['top','bottom','shoe'][k]}">
 <span class="quick-icon">${itemThumbnail(x)}</span>
 <span><span class="quick-name">${escapeHtml(x.name)}</span><small>${escapeHtml(itemTypeName(x))} · tap to change</small></span><span class="quick-arrow">↻</span></button>`).join('');
-$('quickPieces').querySelectorAll('[data-cycle]').forEach(b=>b.addEventListener('click',()=>cyclePiece(b.dataset.cycle)));
+$('quickPieces').querySelectorAll('[data-cycle]').forEach(b=>b.addEventListener('click',()=>cyclePiece(b.dataset.cycle,b)));
 }
 
-function cyclePiece(type){
+function cyclePiece(type,trigger){
 const xs=state.items.filter(x=>x.type===type);
-if(xs.length<2){openWizard(type==='top'?'tee':type==='pants'?'pants':'shoes');return;}
+if(xs.length<2){openWizard(type==='top'?'tee':type==='pants'?'pants':'shoes',trigger);return;}
 const pos=xs.findIndex(x=>x.id===state.selected[type]);
 state.selected[type]=xs[(pos+1)%xs.length].id;
 if(type==='top')styleFilter='all';
@@ -519,20 +547,54 @@ const item={type:kind==='pants'||kind==='shorts'?'pants':kind==='shoes'?'shoes':
 return itemThumbnail(item);
 }
 
-function openWizard(kind='tee'){
-lastWizardFocus=document.activeElement;
+function openWizard(kind='tee',trigger=document.activeElement){
+lastWizardFocus=trigger;
 const known=GARMENTS.some(g=>g.id===kind)||['pants','shorts','shoes'].includes(kind);
 wizard={kind:known?kind:'tee',family:'white',color:palette.white,sleeve:kind==='tank'?'none':['shirt','overshirt','sweater','longtee'].includes(kind)?'long':'short',name:''};
 wizardStep=1;
-$('wizardOverlay').hidden=false;document.body.style.overflow='hidden';renderWizard();$('wizardClose').focus();
+$('wizardOverlay').hidden=false;
+const y=window.scrollY;
+document.body.dataset.sheetScroll=y;
+document.body.style.position='fixed';document.body.style.top=-y+'px';document.body.style.width='100%';
+document.querySelector('main').inert=true;
+renderWizard();$('wizardClose').focus({preventScroll:true});
+animateSheet(true);
 }
 
-function closeWizard(){
-$('wizardOverlay').hidden=true;document.body.style.overflow='';
-if(lastWizardFocus&&typeof lastWizardFocus.focus==='function')lastWizardFocus.focus();
+let sheetAnimation=null;
+function animateSheet(open){
+const dialog=document.querySelector('.wizard-dialog');
+const current=getComputedStyle(dialog).transform;
+const opacity=getComputedStyle(dialog).opacity;
+if(sheetAnimation)sheetAnimation.cancel();
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)return null;
+const mobile=matchMedia('(max-width:760px)').matches;
+const rest='translateY(0px)',away=mobile?'translateY(36px)':'translateY(8px)';
+sheetAnimation=dialog.animate([
+ {transform:current==='none'?(open?away:rest):current,opacity:open?0:Number(opacity)},
+ {transform:open?rest:away,opacity:open?1:0}
+],{duration:open?180:140,easing:'cubic-bezier(.2,.7,.2,1)',fill:'both'});
+return sheetAnimation;
+}
+function closeWizard(immediate=false){
+const finish=()=>{
+ $('wizardOverlay').hidden=true;
+ if(sheetAnimation){sheetAnimation.cancel();sheetAnimation=null;}
+ document.querySelector('main').inert=false;
+ const y=Number(document.body.dataset.sheetScroll)||0;
+ document.body.style.position='';document.body.style.top='';document.body.style.width='';
+ window.scrollTo({top:y,behavior:'instant'});
+ if(lastWizardFocus?.isConnected)lastWizardFocus.focus({preventScroll:true});
+};
+if(immediate){finish();return;}
+const animation=animateSheet(false);
+if(animation)animation.onfinish=finish;else finish();
 }
 
 function renderWizard(){
+const focused=document.activeElement;
+const selected=focused?.dataset.kind||focused?.dataset.colour;
+const restoreSelection=$('wizardContent').contains(focused);
 $('wizardProgress').querySelectorAll('span').forEach((x,i)=>x.classList.toggle('done',i<wizardStep));
 $('wizardLead').textContent=['','1. What kind of clothing?','2. Pick its colour','3. Save it to your wardrobe'][wizardStep];
 $('wizardBack').textContent=wizardStep===1?'Cancel':'Back';
@@ -547,6 +609,13 @@ const title=wizard.name||wizard.family[0].toUpperCase()+wizard.family.slice(1)+'
 const isTop=GARMENTS.some(x=>x.id===wizard.kind);
 $('wizardContent').innerHTML=`<div class="wizard-summary"><span>${kindThumbnail(wizard.kind,wizard.color,wizard.sleeve)}</span><div><strong>${escapeHtml(prettyKind(wizard.kind))}</strong><p class="sub">${escapeHtml(wizard.family)} · One new wardrobe item</p></div></div><label class="wizard-field">Name (optional)<input id="wizardName" maxlength="48" value="${escapeHtml(title)}" placeholder="e.g. Cream knitted polo"></label>${isTop?`<label class="wizard-field">Sleeves<select id="wizardSleeve"><option value="none" ${wizard.sleeve==='none'?'selected':''}>Sleeveless</option><option value="short" ${wizard.sleeve==='short'?'selected':''}>Short sleeve</option><option value="long" ${wizard.sleeve==='long'?'selected':''}>Long sleeve</option></select></label>`:''}`;
 }
+if(restoreSelection){
+ const replacement=Array.from($('wizardContent').querySelectorAll('button')).find(b=>(b.dataset.kind||b.dataset.colour)===selected);
+ replacement?.focus({preventScroll:true});
+}
+}
+function changeWizardStep(delta){
+wizardStep+=delta;renderWizard();$('wizardContent').scrollTop=0;$('wizardLead').focus({preventScroll:true});
 }
 
 function finishWizard(){
@@ -557,7 +626,7 @@ $('newFamily').value=wizard.family;$('newColor').value=wizard.color;
 $('newName').value=name;
 if(GARMENTS.some(x=>x.id===kind))$('newSleeve').value=$('wizardSleeve')?.value||wizard.sleeve;
 $('addForm').requestSubmit();
-closeWizard();switchTab('wardrobe');render();
+closeWizard(true);switchTab('wardrobe');render();$('openWizard').focus({preventScroll:true});
 }
 function render(){ensureSelected();renderStylePicker();renderOptions();renderLook();renderSuggestions();renderFavs();renderInventory();renderQuickPieces();renderWardrobeGrid();}
 $('shuffle').addEventListener('click',()=>{const choices=allOutfits().slice(0,Math.max(1,Math.min(12,allOutfits().length))).filter(x=>signature(x.a)!==signature(current()));if(!choices.length)return;const pos=Math.floor(Math.random()*choices.length);selectTriple(choices[pos].a)});
@@ -589,17 +658,26 @@ $('import').addEventListener('click',()=>$('importFile').click());
 $('importFile').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const v=JSON.parse(await file.text());if(!Array.isArray(v.items)||!v.selected||!Array.isArray(v.favourites)||v.items.length>500||!v.items.every(x=>x&&typeof x.id==='string'&&x.id.length<120&&typeof x.name==='string'&&x.name.length<120&&['top','pants','shoes'].includes(x.type)&&typeof x.family==='string'&&palette[x.family]&&validColor(x.color))||!['top','pants','shoes'].every(type=>v.items.some(x=>x.type===type)))throw Error('Invalid backup');state={items:v.items.map(normaliseTop).map(normaliseBottom),selected:v.selected,favourites:v.favourites.filter(a=>Array.isArray(a)&&a.length===3)};styleFilter='all';ensureSelected();save();render();notice('Wardrobe restored.')}catch(_){notice('This file is not a valid Outfit Edit backup.')}e.target.value='';});
 $('reset').addEventListener('click',()=>{if(!confirm('Reset all clothes and saved outfits to the original sample wardrobe?'))return;state={items:copy(defaults),selected:{top:'t-cream',pants:'p-olive',shoes:'s-white'},favourites:[]};save();render();notice('Original wardrobe restored.');});
 
-$('mainNav').querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+$('mainNav').querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab,true)));
 $('wardrobeFilters').querySelectorAll('[data-closet]').forEach(b=>b.addEventListener('click',()=>{
  wardrobeFilter=b.dataset.closet;
  $('wardrobeFilters').querySelectorAll('[data-closet]').forEach(x=>x.classList.toggle('active',x===b));
  renderWardrobeGrid();
 }));
-$('openWizard').addEventListener('click',()=>openWizard());
-$('quickAdd').addEventListener('click',()=>openWizard());
-$('wizardClose').addEventListener('click',closeWizard);
+$('openWizard').addEventListener('click',e=>openWizard('tee',e.currentTarget));
+$('quickAdd').addEventListener('click',e=>openWizard('tee',e.currentTarget));
+$('wizardClose').addEventListener('click',()=>closeWizard());
 $('wizardOverlay').addEventListener('click',e=>{if(e.target===$('wizardOverlay'))closeWizard();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('wizardOverlay').hidden)closeWizard();});
+document.addEventListener('keydown',e=>{
+ if($('wizardOverlay').hidden)return;
+ if(e.key==='Escape'){e.preventDefault();closeWizard();}
+ if(e.key==='Tab'){
+  const controls=Array.from($('wizardOverlay').querySelectorAll('button,input,select')).filter(x=>!x.disabled&&x.getClientRects().length);
+  const first=controls[0],last=controls[controls.length-1];
+  if(e.shiftKey&&(document.activeElement===first||document.activeElement===$('wizardLead'))){e.preventDefault();last.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+ }
+});
 $('wizardContent').addEventListener('click',e=>{
  const type=e.target.closest('[data-kind]'),color=e.target.closest('[data-colour]');
  if(type){wizard.kind=type.dataset.kind;wizard.sleeve=(GARMENTS.find(g=>g.id===wizard.kind)||{sleeve:'short'}).sleeve;wizard.name='';renderWizard();}
@@ -607,8 +685,8 @@ $('wizardContent').addEventListener('click',e=>{
 });
 $('wizardContent').addEventListener('input',e=>{if(e.target.id==='wizardExactColor'&&validColor(e.target.value))wizard.color=e.target.value;else if(e.target.id==='wizardName')wizard.name=e.target.value;else if(e.target.id==='wizardSleeve')wizard.sleeve=e.target.value;});
 $('wizardContent').addEventListener('change',e=>{if(e.target.id==='wizardSleeve')wizard.sleeve=e.target.value;});
-$('wizardBack').addEventListener('click',()=>{if(wizardStep===1)closeWizard();else{wizardStep--;renderWizard();}});
-$('wizardNext').addEventListener('click',()=>{if(wizardStep===3)finishWizard();else{wizardStep++;renderWizard();}});
+$('wizardBack').addEventListener('click',()=>{if(wizardStep===1)closeWizard();else{changeWizardStep(-1);}});
+$('wizardNext').addEventListener('click',()=>{if(wizardStep===3)finishWizard();else{changeWizardStep(1);}});
 
 $('newColor').value=palette.white;$('newClothingType').value='tee';changeNewClothingType();render();
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
